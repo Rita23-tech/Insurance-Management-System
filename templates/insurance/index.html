@@ -1,0 +1,211 @@
+
+<!DOCTYPE html>
+{% load static %}
+<html lang="en" dir="ltr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Insurance Policy | Home</title>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #f8fafc;
+            color: #172b4d;
+        }
+
+        .xyz {
+            min-height: 650px;
+            margin-bottom: 0;
+            background:
+                linear-gradient(
+                    90deg,
+                    rgba(8, 27, 54, 0.88),
+                    rgba(8, 27, 54, 0.25)
+                ),
+                url('{% static "image/homepage.jpg" %}');
+
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            display: flex;
+            align-items: center;
+        }
+
+        .hero-content {
+            max-width: 1200px;
+            width: 100%;
+            margin: auto;
+            padding: 70px 30px;
+            color: white;
+        }
+
+        .hero-tag {
+            display: inline-block;
+            padding: 9px 18px;
+            border: 1px solid rgba(255,255,255,0.4);
+            border-radius: 30px;
+            background: rgba(255,255,255,0.12);
+            font-size: 13px;
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+            margin-bottom: 25px;
+        }
+
+        .hero-content h1 {
+            font-size: clamp(38px, 5vw, 65px);
+            font-weight: 750;
+            line-height: 1.15;
+            max-width: 700px;
+            margin-bottom: 22px;
+        }
+
+        .hero-content p {
+            font-size: 18px;
+            line-height: 1.8;
+            max-width: 570px;
+            color: rgba(255,255,255,0.85);
+        }
+
+        .trust-section {
+            padding: 75px 20px;
+            background: #ffffff;
+        }
+
+        .trust-container {
+            max-width: 1150px;
+            margin: auto;
+            text-align: center;
+        }
+
+        .section-label {
+            color: #2563eb;
+            font-size: 13px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin-bottom: 18px;
+        }
+
+        .trust-section h2 {
+            font-size: clamp(25px, 3vw, 36px);
+            color: #102a43;
+            margin-bottom: 20px;
+            font-weight: 700;
+        }
+
+        .quote {
+            max-width: 780px;
+            margin: auto;
+            color: #52647a;
+            font-size: 19px;
+            line-height: 1.8;
+        }
+
+        .quote-author {
+            margin-top: 20px;
+            color: #2563eb;
+            font-weight: 700;
+            font-size: 14px;
+            letter-spacing: 1px;
+        }
+
+        .trust-divider {
+            width: 55px;
+            height: 4px;
+            background: #2563eb;
+            border-radius: 10px;
+            margin: 25px auto;
+        }
+
+        @media (max-width: 768px) {
+            .xyz {
+                min-height: 520px;
+                background-position: center;
+            }
+
+            .hero-content {
+                padding: 50px 24px;
+            }
+
+            .hero-content h1 {
+                font-size: 38px;
+            }
+
+            .hero-content p {
+                font-size: 16px;
+            }
+
+            .trust-section {
+                padding: 55px 20px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    {% include "insurance/navbar.html" %}
+
+    <section id="section-jumbotron"
+             class="jumbotron jumbotron-fluid xyz">
+
+        <div class="hero-content">
+
+            <span class="hero-tag">
+                Your Future. Our Priority.
+            </span>
+
+            <h1>
+                Protect What Matters Most.
+            </h1>
+
+            <p>
+                Life is unpredictable, but your financial security
+                doesn't have to be. Discover insurance solutions
+                designed to protect you, your family, and everything
+                you've worked hard to build.
+            </p>
+
+        </div>
+
+    </section>
+
+    <section class="trust-section">
+
+        <div class="trust-container">
+
+            <p class="section-label">
+                Security • Protection • Peace of Mind
+            </p>
+
+            <h2>
+                A Better Way to Protect Your Future
+            </h2>
+
+            <div class="trust-divider"></div>
+
+            <p class="quote">
+                “Whole life does two things for you: Protects your
+                family and allows you to save for your future.”
+            </p>
+
+            <p class="quote-author">
+                — DINARA
+            </p>
+
+        </div>
+
+    </section>
+
+    {% include "insurance/footer.html" %}
+
+</body>
+</html>

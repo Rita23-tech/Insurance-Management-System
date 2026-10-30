@@ -1,0 +1,425 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="en" dir="ltr">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Insurance Management</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+
+  <style media="screen">
+    /* =====================================================================
+       Admin shell (header + sidebar + content frame)
+
+       Every selector here starts with an #ims-... id on purpose. The pages
+       that extend this file (Customer, Questions, etc.) load their own
+       Bootstrap and CSS *after* this block, and plain class selectors like
+       .sidebar or .content could get overridden by them. ID selectors win,
+       so the frame looks the same on every page.
+       ===================================================================== */
+
+    :root {
+      --ims-black: #04060f;
+      --ims-navy-900: #0a1230;
+      --ims-blue-600: #1d4ed8;
+      --ims-blue-500: #2f6bff;
+      --ims-blue-300: #8fb3ff;
+      --ims-page: #edf0f7;
+      --ims-header-h: 64px;
+      --ims-sb-open: 260px;
+      --ims-sb-rail: 76px;
+    }
+
+    html {
+      -webkit-text-size-adjust: 100%;
+    }
+
+    /* NOTE: font sizes in this shell are in px, not rem.
+       Bootstrap 3 (used by the Customer and Questions pages) sets html { font-size: 62.5% },
+       which would shrink anything sized in rem. */
+
+    body {
+      margin: 0;
+      padding: 0;
+      overflow-x: hidden;
+    }
+
+    /* Hidden checkbox that remembers "sidebar open or closed".
+       Visually hidden (not display:none) so the keyboard can still reach it. */
+    #ims-nav-toggle {
+      position: absolute;
+      opacity: 0;
+      width: 1px;
+      height: 1px;
+      pointer-events: none;
+    }
+
+    /* ---------- Header ---------- */
+    #ims-header {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: var(--ims-header-h);
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      padding: 0 20px;
+      box-sizing: border-box;
+      background: linear-gradient(90deg, var(--ims-black) 0%, var(--ims-navy-900) 100%);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+      font-family: "Manrope", "Segoe UI", system-ui, -apple-system, sans-serif;
+      z-index: 30;
+    }
+
+    #ims-header .ims-menu-btn {
+      width: 40px;
+      height: 40px;
+      margin: 0;
+      flex: none;
+      display: grid;
+      place-items: center;
+      border-radius: 10px;
+      color: #fff;
+      font-size: 17px;
+      cursor: pointer;
+      transition: background-color 0.2s ease;
+    }
+
+    #ims-header .ims-menu-btn:hover {
+      background: rgba(255, 255, 255, 0.1);
+    }
+
+    #ims-nav-toggle:focus-visible ~ #ims-header .ims-menu-btn {
+      outline: 2px solid var(--ims-blue-300);
+      outline-offset: 2px;
+    }
+
+    #ims-header .ims-brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin: 0;
+      color: #fff;
+      font-size: 17px;
+      font-weight: 700;
+      line-height: 1.2;
+      letter-spacing: 0.01em;
+    }
+
+    #ims-header .ims-brand i {
+      color: var(--ims-blue-300);
+    }
+
+    #ims-header .ims-right {
+      margin-left: auto;
+    }
+
+    #ims-header .ims-logout-form {
+      margin: 0;
+    }
+
+    #ims-header button.ims-logout {
+      display: inline-flex;
+      border: 0;
+      cursor: pointer;
+      font-family: inherit;
+      line-height: 1.2;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 16px;
+      border-radius: 999px;
+      background: var(--ims-blue-600);
+      color: #fff;
+      text-decoration: none;
+      font-size: 14px;
+      font-weight: 600;
+      transition: background-color 0.2s ease, transform 0.2s ease;
+    }
+
+    #ims-header button.ims-logout:hover {
+      background: var(--ims-blue-500);
+      color: #fff;
+      text-decoration: none;
+    }
+
+    #ims-header button.ims-logout:active {
+      transform: scale(0.97);
+    }
+
+    #ims-header button.ims-logout:focus-visible {
+      outline: 2px solid var(--ims-blue-300);
+      outline-offset: 2px;
+    }
+
+    /* ---------- Sidebar ----------
+       Phones and tablets: hidden off-screen, the menu button slides it in over the page.
+       Desktop (see the media query further down): open by default, the button shrinks it to icons. */
+    #ims-sidebar {
+      position: fixed;
+      top: var(--ims-header-h);
+      bottom: 0;
+      left: 0;
+      width: var(--ims-sb-open);
+      box-sizing: border-box;
+      padding: 20px 12px;
+      background: var(--ims-navy-900);
+      border-right: 1px solid rgba(255, 255, 255, 0.06);
+      font-family: "Manrope", "Segoe UI", system-ui, -apple-system, sans-serif;
+      overflow-x: hidden;
+      overflow-y: auto;
+      transform: translateX(-100%);
+      transition: transform 0.25s ease;
+      z-index: 20;
+    }
+
+    #ims-nav-toggle:checked ~ #ims-sidebar {
+      transform: none;
+      box-shadow: 8px 0 30px rgba(0, 0, 0, 0.4);
+    }
+
+    #ims-sidebar .ims-profile {
+      text-align: center;
+      padding-bottom: 18px;
+      margin-bottom: 14px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    }
+
+    #ims-sidebar .ims-avatar {
+      width: 84px;
+      height: 84px;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 2px solid rgba(143, 179, 255, 0.5);
+      transition: width 0.25s ease, height 0.25s ease;
+    }
+
+    #ims-sidebar .ims-name {
+      margin: 12px 0 0;
+      color: #fff;
+      font-size: 15px;
+      font-weight: 700;
+      line-height: 1.3;
+    }
+
+    #ims-sidebar a,
+    #ims-sidebar a:link,
+    #ims-sidebar a:visited {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      height: 46px;
+      padding: 0 14px;
+      margin: 0 0 4px;
+      box-sizing: border-box;
+      border-radius: 10px;
+      color: #b8c3de;
+      text-decoration: none;
+      font-size: 15px;
+      font-weight: 600;
+      white-space: nowrap;
+      transition: background-color 0.2s ease, color 0.2s ease;
+    }
+
+    #ims-sidebar a:hover {
+      background: rgba(255, 255, 255, 0.07);
+      color: #fff;
+      text-decoration: none;
+    }
+
+    #ims-sidebar a:focus-visible {
+      outline: 2px solid var(--ims-blue-300);
+      outline-offset: -2px;
+    }
+
+    #ims-sidebar a.is-active,
+    #ims-sidebar a.is-active:hover {
+      background: var(--ims-blue-600);
+      color: #fff;
+      box-shadow: 0 6px 16px rgba(29, 78, 216, 0.35);
+    }
+
+    #ims-sidebar a i {
+      flex: none;
+      width: 20px;
+      padding: 0;
+      text-align: center;
+      font-size: 16px;
+    }
+
+    /* Dark overlay behind the sidebar on small screens. Tapping it closes the sidebar. */
+    #ims-scrim {
+      display: block;
+      position: fixed;
+      top: var(--ims-header-h);
+      left: 0;
+      right: 0;
+      bottom: 0;
+      margin: 0;
+      background: rgba(4, 6, 15, 0.55);
+      opacity: 0;
+      visibility: hidden;
+      transition: opacity 0.25s ease, visibility 0.25s ease;
+      z-index: 15;
+    }
+
+    #ims-nav-toggle:checked ~ #ims-scrim {
+      opacity: 1;
+      visibility: visible;
+    }
+
+    /* ---------- Content frame ----------
+       min-width: 0 + overflow-x: auto means a wide table (like the customer list)
+       scrolls INSIDE this area. It can no longer stretch the whole page,
+       which is what makes phones zoom out and shrink the header and sidebar. */
+    #ims-main {
+      margin-left: 0;
+      min-width: 0;
+      min-height: 100vh;
+      box-sizing: border-box;
+      padding: calc(var(--ims-header-h) + 12px) 0 40px;
+      overflow-x: auto;
+      background: var(--ims-page);
+      font-family: "Manrope", "Segoe UI", system-ui, -apple-system, sans-serif;
+    }
+
+    /* Bootstrap's .container has fixed widths that can be wider than the space next to the sidebar.
+       Let it fill the available space instead (max 1200px). */
+    #ims-main .container {
+      width: auto;
+      max-width: 1200px;
+    }
+
+    /* ---------- Desktop ---------- */
+    @media (min-width: 992px) {
+      #ims-sidebar {
+        transform: none;
+        box-shadow: none;
+        transition: width 0.25s ease;
+      }
+
+      #ims-scrim {
+        display: none;
+      }
+
+      #ims-main {
+        margin-left: var(--ims-sb-open);
+        transition: margin-left 0.25s ease;
+      }
+
+      /* Checked = collapsed to an icon rail */
+      #ims-nav-toggle:checked ~ #ims-sidebar {
+        width: var(--ims-sb-rail);
+        box-shadow: none;
+      }
+
+      #ims-nav-toggle:checked ~ #ims-main {
+        margin-left: var(--ims-sb-rail);
+      }
+
+      #ims-nav-toggle:checked ~ #ims-sidebar a {
+        justify-content: center;
+        gap: 0;
+        padding: 0;
+      }
+
+      #ims-nav-toggle:checked ~ #ims-sidebar a span,
+      #ims-nav-toggle:checked ~ #ims-sidebar .ims-name {
+        display: none;
+      }
+
+      #ims-nav-toggle:checked ~ #ims-sidebar .ims-avatar {
+        width: 40px;
+        height: 40px;
+      }
+    }
+
+    /* ---------- Small phones ---------- */
+    @media (max-width: 480px) {
+      #ims-header {
+        padding: 0 12px;
+        gap: 8px;
+      }
+
+      #ims-header .ims-brand {
+        font-size: 15px;
+      }
+
+      #ims-header button.ims-logout span {
+        display: none;
+      }
+
+      #ims-header button.ims-logout {
+        padding: 10px 12px;
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      #ims-sidebar,
+      #ims-sidebar .ims-avatar,
+      #ims-sidebar a,
+      #ims-scrim,
+      #ims-main,
+      #ims-header .ims-menu-btn,
+      #ims-header button.ims-logout {
+        transition: none;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <input type="checkbox" id="ims-nav-toggle" aria-label="Toggle sidebar">
+
+  <!--header area start-->
+  <header id="ims-header">
+    <label for="ims-nav-toggle" class="ims-menu-btn" aria-label="Toggle sidebar">
+      <i class="fas fa-bars"></i>
+    </label>
+    <h3 class="ims-brand"><i class="fas fa-shield-alt"></i>Insurance Management</h3>
+    <div class="ims-right">
+      <!-- Django 5+ only accepts POST for logout, so this is a form with a button instead of a link -->
+      <form action="/logout" method="post" class="ims-logout-form">
+        {% csrf_token %}
+        <button type="submit" class="ims-logout"><i class="fas fa-sign-out-alt"></i><span>Logout</span></button>
+      </form>
+    </div>
+  </header>
+  <!--header area end-->
+
+  <!--sidebar start-->
+  <nav id="ims-sidebar" aria-label="Admin navigation">
+
+    <div class="ims-profile">
+      <img src="{% static "image/admin.png" %}" class="ims-avatar" alt="Admin">
+      <h4 class="ims-name">Admin</h4>
+    </div>
+
+    <!-- The highlighted link follows the current page (uses Django's request context processor, which is on by default) -->
+    <a href="/admin-dashboard" title="Dashboard" {% if 'dashboard' in request.path %}class="is-active" aria-current="page"{% endif %}><i class="fas fa-tachometer-alt"></i><span>Dashboard</span></a>
+    <a href="/admin-view-customer" title="Customer" {% if 'customer' in request.path %}class="is-active" aria-current="page"{% endif %}><i class="fas fa-users"></i><span>Customer</span></a>
+    <a href="/admin-category" title="Category" {% if 'category' in request.path %}class="is-active" aria-current="page"{% endif %}><i class="fas fa-list-alt"></i><span>Category</span></a>
+    <a href="/admin-policy" title="Policy" {% if 'policy' in request.path %}class="is-active" aria-current="page"{% endif %}><i class="fab fa-product-hunt"></i><span>Policy</span></a>
+    <a href="/admin-question" title="Questions" {% if 'question' in request.path %}class="is-active" aria-current="page"{% endif %}><i class="fas fa-question-circle"></i><span>Questions</span></a>
+
+  </nav>
+  <label for="ims-nav-toggle" id="ims-scrim" aria-hidden="true"></label>
+  <!--sidebar end-->
+
+  <!--content start-->
+  <main id="ims-main">
+    {% block content %}
+
+    {% endblock content %}
+  </main>
+  <!--content end-->
+
+</body>
+
+</html>

@@ -1,0 +1,461 @@
+{% extends 'insurance/adminbase.html' %}
+{% load widget_tweaks %}
+{% block content %}
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+<style>
+  /* ---------- Design tokens ---------- */
+  .admin-dashboard {
+    --black: #04060f;
+    --navy-900: #0a1230;
+    --navy-700: #17245a;
+    --blue-600: #1d4ed8;
+    --blue-500: #2f6bff;
+    --page: #f3f5fa;
+    --card: #ffffff;
+    --line: #e1e7f0;
+    --ink: #0a1230;
+    --muted: #64718a;
+
+    box-sizing: border-box;
+    font-family: "Manrope", "Segoe UI", system-ui, -apple-system, sans-serif;
+    color: var(--ink);
+    background: var(--page);
+    border-radius: 20px;
+    padding: 28px 32px 40px;
+    margin: 20px auto 48px;
+    max-width: 1240px;
+    min-height: 80vh;
+  }
+
+  .admin-dashboard *,
+  .admin-dashboard *::before,
+  .admin-dashboard *::after {
+    box-sizing: border-box;
+  }
+
+  .admin-dashboard a,
+  .admin-dashboard a:link,
+  .admin-dashboard a:visited,
+  .admin-dashboard a:hover {
+    text-decoration: none;
+    color: inherit;
+  }
+
+  /* ---------- Header banner ---------- */
+  .dashboard-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 16px;
+    padding: 26px 30px;
+    margin-bottom: 8px;
+    border-radius: 16px;
+    background: linear-gradient(115deg, var(--black) 0%, var(--navy-900) 45%, var(--navy-700) 100%);
+    border-bottom: 3px solid var(--blue-500);
+  }
+
+  .dashboard-header h2 {
+    color: #fff;
+    font-size: 1.65rem;
+    font-weight: 800;
+    letter-spacing: -0.01em;
+    margin: 0 0 4px;
+  }
+
+  .dashboard-header p {
+    color: rgba(255, 255, 255, 0.7);
+    font-size: 0.92rem;
+    margin: 0;
+  }
+
+  .dashboard-label {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: rgba(47, 107, 255, 0.2);
+    border: 1px solid rgba(143, 179, 255, 0.4);
+    color: #cfe0ff;
+    padding: 8px 16px;
+    border-radius: 999px;
+    font-size: 0.85rem;
+    font-weight: 600;
+  }
+
+  /* ---------- Section headings ---------- */
+  .section-heading {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    color: var(--ink);
+    font-size: 1rem;
+    font-weight: 700;
+    margin: 30px 0 16px;
+  }
+
+  .section-heading::before {
+    content: "";
+    width: 4px;
+    height: 20px;
+    border-radius: 4px;
+    background: var(--blue-600);
+  }
+
+  /* ---------- Card grid ---------- */
+  .stat-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+    gap: 18px;
+  }
+
+  /* ---------- Stat card ---------- */
+  .dashboard-card {
+    --accent: var(--blue-600);
+    --accent-soft: rgba(29, 78, 216, 0.1);
+
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    min-height: 150px;
+    padding: 22px 20px;
+    background: var(--card);
+    border: 1px solid var(--line);
+    border-radius: 14px;
+    overflow: hidden;
+    cursor: pointer;
+    transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+  }
+
+  /* Accent bar that slides in along the top edge on hover */
+  .dashboard-card::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 0;
+    height: 3px;
+    background: var(--accent);
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform 0.3s ease;
+  }
+
+  .dashboard-card:hover,
+  .dashboard-card:focus-visible {
+    transform: translateY(-4px);
+    border-color: var(--accent);
+    box-shadow: 0 14px 30px rgba(10, 18, 48, 0.12);
+  }
+
+  .dashboard-card:hover::before,
+  .dashboard-card:focus-visible::before {
+    transform: scaleX(1);
+  }
+
+  .dashboard-card:focus-visible {
+    outline: 2px solid var(--blue-500);
+    outline-offset: 3px;
+  }
+
+  .dashboard-card:active {
+    transform: translateY(-1px) scale(0.985);
+  }
+
+  .card-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 12px;
+  }
+
+  .card-title {
+    color: var(--muted);
+    font-size: 0.85rem;
+    font-weight: 600;
+    line-height: 1.45;
+    margin: 0;
+    max-width: 170px;
+    transition: color 0.2s ease;
+  }
+
+  .dashboard-card:hover .card-title,
+  .dashboard-card:focus-visible .card-title {
+    color: var(--ink);
+  }
+
+  .card-icon {
+    flex: none;
+    width: 44px;
+    height: 44px;
+    display: grid;
+    place-items: center;
+    border-radius: 12px;
+    font-size: 1.05rem;
+    color: var(--accent);
+    background: var(--accent-soft);
+    transition: background-color 0.2s ease, color 0.2s ease, transform 0.2s ease;
+  }
+
+  .dashboard-card:hover .card-icon,
+  .dashboard-card:focus-visible .card-icon {
+    background: var(--accent);
+    color: #fff;
+    transform: scale(1.06);
+  }
+
+  .card-bottom {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    margin-top: 18px;
+  }
+
+  .card-number {
+    color: var(--ink);
+    font-size: 2.2rem;
+    font-weight: 800;
+    line-height: 1;
+    letter-spacing: -0.02em;
+    font-variant-numeric: tabular-nums;
+    margin: 0;
+  }
+
+  .card-arrow {
+    color: #a3afc2;
+    font-size: 0.85rem;
+    transition: color 0.2s ease, transform 0.2s ease;
+  }
+
+  .dashboard-card:hover .card-arrow,
+  .dashboard-card:focus-visible .card-arrow {
+    color: var(--accent);
+    transform: translateX(5px);
+  }
+
+  /* ---------- Card colour variations ---------- */
+  .tone-blue {
+    --accent: #1d4ed8;
+    --accent-soft: rgba(29, 78, 216, 0.1);
+  }
+
+  .tone-navy {
+    --accent: #17245a;
+    --accent-soft: rgba(23, 36, 90, 0.1);
+  }
+
+  .tone-green {
+    --accent: #15803d;
+    --accent-soft: rgba(21, 128, 61, 0.1);
+  }
+
+  .tone-red {
+    --accent: #dc2626;
+    --accent-soft: rgba(220, 38, 38, 0.09);
+  }
+
+  .tone-amber {
+    --accent: #c2700a;
+    --accent-soft: rgba(194, 112, 10, 0.11);
+  }
+
+  /* ---------- Small screens ---------- */
+  @media (max-width: 768px) {
+    .admin-dashboard {
+      padding: 18px 16px 32px;
+      border-radius: 14px;
+      margin: 12px 8px 32px;
+    }
+
+    .dashboard-header {
+      padding: 22px 20px;
+    }
+
+    .dashboard-header h2 {
+      font-size: 1.4rem;
+    }
+  }
+
+  @media (max-width: 480px) {
+    .card-number {
+      font-size: 1.9rem;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .dashboard-card,
+    .dashboard-card::before,
+    .card-icon,
+    .card-arrow {
+      transition: none;
+    }
+
+    .dashboard-card:hover,
+    .dashboard-card:focus-visible,
+    .dashboard-card:active {
+      transform: none;
+    }
+  }
+</style>
+
+<div class="admin-dashboard">
+
+  <!-- Dashboard Header -->
+  <div class="dashboard-header">
+    <div>
+      <h2>Admin Overview</h2>
+      <p>Monitor users, insurance policies and application activity.</p>
+    </div>
+
+    <div class="dashboard-label">
+      <i class="fas fa-shield-alt"></i>
+      Administration
+    </div>
+  </div>
+
+  <!-- General Statistics -->
+  <h5 class="section-heading">General Overview</h5>
+
+  <div class="stat-grid">
+
+    <a class="dashboard-card tone-blue" href="admin-view-customer">
+      <div class="card-top">
+        <h6 class="card-title">Total Registered Users</h6>
+        <div class="card-icon"><i class="fas fa-users"></i></div>
+      </div>
+      <div class="card-bottom">
+        <h2 class="card-number">{{total_user}}</h2>
+        <i class="fas fa-arrow-right card-arrow"></i>
+      </div>
+    </a>
+
+    <a class="dashboard-card tone-navy" href="admin-view-policy">
+      <div class="card-top">
+        <h6 class="card-title">Listed Policies</h6>
+        <div class="card-icon"><i class="fab fa-product-hunt"></i></div>
+      </div>
+      <div class="card-bottom">
+        <h2 class="card-number">{{total_policy}}</h2>
+        <i class="fas fa-arrow-right card-arrow"></i>
+      </div>
+    </a>
+
+    <a class="dashboard-card tone-blue" href="admin-view-category">
+      <div class="card-top">
+        <h6 class="card-title">Listed Categories</h6>
+        <div class="card-icon"><i class="fas fa-list-alt"></i></div>
+      </div>
+      <div class="card-bottom">
+        <h2 class="card-number">{{total_category}}</h2>
+        <i class="fas fa-arrow-right card-arrow"></i>
+      </div>
+    </a>
+
+    <a class="dashboard-card tone-navy" href="admin-question">
+      <div class="card-top">
+        <h6 class="card-title">Total Questions</h6>
+        <div class="card-icon"><i class="fas fa-question-circle"></i></div>
+      </div>
+      <div class="card-bottom">
+        <h2 class="card-number">{{total_question}}</h2>
+        <i class="fas fa-arrow-right card-arrow"></i>
+      </div>
+    </a>
+
+  </div>
+
+  <!-- Policy Applications -->
+  <h5 class="section-heading">Policy Applications &amp; Approvals</h5>
+
+  <div class="stat-grid">
+
+    <a class="dashboard-card tone-blue" href="admin-view-policy-holder">
+      <div class="card-top">
+        <h6 class="card-title">Total Applied Policy Holders</h6>
+        <div class="card-icon"><i class="fas fa-user-cog"></i></div>
+      </div>
+      <div class="card-bottom">
+        <h2 class="card-number">{{total_policy_holder}}</h2>
+        <i class="fas fa-arrow-right card-arrow"></i>
+      </div>
+    </a>
+
+    <a class="dashboard-card tone-green" href="admin-view-approved-policy-holder">
+      <div class="card-top">
+        <h6 class="card-title">Approved Policy Holders</h6>
+        <div class="card-icon"><i class="fas fa-user-check"></i></div>
+      </div>
+      <div class="card-bottom">
+        <h2 class="card-number">{{approved_policy_holder}}</h2>
+        <i class="fas fa-arrow-right card-arrow"></i>
+      </div>
+    </a>
+
+    <a class="dashboard-card tone-red" href="admin-view-disapproved-policy-holder">
+      <div class="card-top">
+        <h6 class="card-title">Disapproved Policy Holders</h6>
+        <div class="card-icon"><i class="fas fa-user-times"></i></div>
+      </div>
+      <div class="card-bottom">
+        <h2 class="card-number">{{disapproved_policy_holder}}</h2>
+        <i class="fas fa-arrow-right card-arrow"></i>
+      </div>
+    </a>
+
+    <a class="dashboard-card tone-amber" href="admin-view-waiting-policy-holder">
+      <div class="card-top">
+        <h6 class="card-title">Policy Holders Awaiting Approval</h6>
+        <div class="card-icon"><i class="fas fa-user-clock"></i></div>
+      </div>
+      <div class="card-bottom">
+        <h2 class="card-number">{{waiting_policy_holder}}</h2>
+        <i class="fas fa-arrow-right card-arrow"></i>
+      </div>
+    </a>
+
+  </div>
+
+</div>
+
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"></script>
+
+<script>
+  // Count-up: numbers tick up from 0 once when the page loads.
+  // It's visual only. When it finishes, the original value from Django is put back exactly as it was.
+  (function () {
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+
+    document.querySelectorAll('.card-number').forEach(function (el) {
+      var original = el.textContent.trim();
+      var target = parseInt(original.replace(/,/g, ''), 10);
+      if (isNaN(target) || target <= 0) return;
+
+      var duration = 800;
+      var start = null;
+      el.textContent = '0';
+
+      function tick(now) {
+        if (start === null) start = now;
+        var t = Math.min((now - start) / duration, 1);
+        var eased = 1 - Math.pow(1 - t, 3);
+        el.textContent = Math.round(target * eased);
+        if (t < 1) {
+          requestAnimationFrame(tick);
+        } else {
+          el.textContent = original;
+        }
+      }
+
+      requestAnimationFrame(tick);
+    });
+  })();
+</script>
+
+{% endblock content %}

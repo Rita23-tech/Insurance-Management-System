@@ -1,0 +1,318 @@
+{% extends 'insurance/adminbase.html' %}
+{% load widget_tweaks %}
+{% block content %}
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+<style type="text/css">
+  /* Kept from the original so the base layout's header still behaves */
+  header {
+    left: 0px;
+    right: 0px;
+  }
+
+  /* ---------- Design tokens ---------- */
+  .dash {
+    --navy-950: #060b1f;
+    --navy-900: #0a1230;
+    --navy-800: #101a42;
+    --navy-700: #17245a;
+    --blue-600: #1d4ed8;
+    --blue-500: #2f6bff;
+    --blue-300: #8fb3ff;
+    --ink: #ffffff;
+    --muted: #9aa7c7;
+    --line: rgba(255, 255, 255, 0.08);
+
+    font-family: "Manrope", "Segoe UI", system-ui, -apple-system, sans-serif;
+    color: var(--ink);
+    background: var(--navy-900);
+    background-image: radial-gradient(1200px 400px at 100% -10%, rgba(47, 107, 255, 0.18), transparent 60%);
+    border-radius: 20px;
+    padding: 36px;
+    margin: 24px auto 48px;
+    max-width: 1200px;
+  }
+
+  .dash a,
+  .dash a:link,
+  .dash a:visited,
+  .dash a:hover {
+    text-decoration: none;
+    color: inherit;
+  }
+
+  /* ---------- Page heading ---------- */
+  .dash-head h1 {
+    font-size: 1.75rem;
+    font-weight: 800;
+    letter-spacing: -0.01em;
+    margin: 0 0 4px;
+    color: var(--ink);
+  }
+
+  .dash-head p {
+    margin: 0;
+    color: var(--muted);
+    font-size: 0.95rem;
+  }
+
+  /* ---------- Sections ---------- */
+  .dash-section {
+    margin-top: 36px;
+  }
+
+  .dash-section h2 {
+    font-size: 1rem;
+    font-weight: 700;
+    color: var(--ink);
+    margin: 0 0 14px;
+  }
+
+  .dash-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+    gap: 16px;
+  }
+
+  /* ---------- Shared tile ---------- */
+  .tile {
+    --accent: var(--blue-500);
+    --accent-soft: rgba(47, 107, 255, 0.16);
+
+    display: flex;
+    background: var(--navy-800);
+    border: 1px solid var(--line);
+    border-radius: 14px;
+    padding: 18px 20px;
+    transition: background-color 0.2s ease, border-color 0.2s ease, transform 0.2s ease;
+  }
+
+  .tile:hover {
+    background: var(--navy-700);
+    border-color: var(--accent);
+    transform: translateY(-2px);
+  }
+
+  .tile:focus-visible {
+    outline: 2px solid var(--blue-300);
+    outline-offset: 3px;
+  }
+
+  .tile__icon {
+    flex: none;
+    width: 44px;
+    height: 44px;
+    border-radius: 12px;
+    display: grid;
+    place-items: center;
+    font-size: 1.05rem;
+    color: var(--accent);
+    background: var(--accent-soft);
+    transition: background-color 0.2s ease, color 0.2s ease;
+  }
+
+  .tile:hover .tile__icon {
+    background: var(--accent);
+    color: #fff;
+  }
+
+  .tile__label {
+    font-weight: 600;
+    font-size: 0.95rem;
+    line-height: 1.35;
+    color: var(--ink);
+  }
+
+  .tile__chevron {
+    color: var(--muted);
+    font-size: 0.8rem;
+    transition: transform 0.2s ease, color 0.2s ease;
+  }
+
+  .tile:hover .tile__chevron {
+    color: #fff;
+    transform: translateX(3px);
+  }
+
+  /* ---------- Action tiles (policy management) ---------- */
+  .tile--action {
+    align-items: center;
+    gap: 14px;
+  }
+
+  .tile--action .tile__chevron {
+    margin-left: auto;
+  }
+
+  .tile--danger {
+    --accent: #f87171;
+    --accent-soft: rgba(248, 113, 113, 0.14);
+  }
+
+  /* ---------- Stat tiles (policy holders) ---------- */
+  .tile--stat {
+    flex-direction: column;
+    gap: 22px;
+    justify-content: space-between;
+  }
+
+  .tile__top {
+    display: flex;
+    align-items: flex-start;
+    gap: 14px;
+  }
+
+  .tile__top .tile__chevron {
+    margin-left: auto;
+    padding-top: 4px;
+  }
+
+  .tile__value {
+    font-size: 2.5rem;
+    font-weight: 800;
+    line-height: 1;
+    letter-spacing: -0.02em;
+    font-variant-numeric: tabular-nums;
+    color: var(--ink);
+  }
+
+  .tile--total {
+    --accent: var(--blue-500);
+    --accent-soft: rgba(47, 107, 255, 0.16);
+  }
+
+  .tile--approved {
+    --accent: #34d399;
+    --accent-soft: rgba(52, 211, 153, 0.14);
+  }
+
+  .tile--disapproved {
+    --accent: #f87171;
+    --accent-soft: rgba(248, 113, 113, 0.14);
+  }
+
+  .tile--waiting {
+    --accent: #fbbf24;
+    --accent-soft: rgba(251, 191, 36, 0.14);
+  }
+
+  /* ---------- Small screens ---------- */
+  @media (max-width: 576px) {
+    .dash {
+      padding: 22px 18px;
+      border-radius: 14px;
+      margin: 12px 8px 32px;
+    }
+
+    .tile__value {
+      font-size: 2.1rem;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .tile,
+    .tile__icon,
+    .tile__chevron {
+      transition: none;
+    }
+
+    .tile:hover {
+      transform: none;
+    }
+  }
+</style>
+
+<div class="dash">
+
+  <div class="dash-head">
+    <h1>Dashboard</h1>
+    <p>Manage policies and review policy holder applications.</p>
+  </div>
+
+  <!-- Policy management -->
+  <section class="dash-section">
+    <h2>Policies</h2>
+    <div class="dash-grid">
+
+      <a class="tile tile--action" href="admin-view-policy">
+        <span class="tile__icon"><i class="fas fa-eye"></i></span>
+        <span class="tile__label">View Policy</span>
+        <i class="fas fa-chevron-right tile__chevron"></i>
+      </a>
+
+      <a class="tile tile--action" href="admin-add-policy">
+        <span class="tile__icon"><i class="fas fa-plus"></i></span>
+        <span class="tile__label">Add policy</span>
+        <i class="fas fa-chevron-right tile__chevron"></i>
+      </a>
+
+      <a class="tile tile--action" href="admin-update-policy">
+        <span class="tile__icon"><i class="fas fa-edit"></i></span>
+        <span class="tile__label">Update Policy</span>
+        <i class="fas fa-chevron-right tile__chevron"></i>
+      </a>
+
+      <a class="tile tile--action tile--danger" href="admin-delete-policy">
+        <span class="tile__icon"><i class="fas fa-trash"></i></span>
+        <span class="tile__label">Delete Policy</span>
+        <i class="fas fa-chevron-right tile__chevron"></i>
+      </a>
+
+    </div>
+  </section>
+
+  <!-- Policy holder stats -->
+  <section class="dash-section">
+    <h2>Policy holders</h2>
+    <div class="dash-grid">
+
+      <a class="tile tile--stat tile--total" href="admin-view-policy-holder">
+        <div class="tile__top">
+          <span class="tile__icon"><i class="fas fa-user-cog"></i></span>
+          <span class="tile__label">Total Applied Policy Holder</span>
+          <i class="fas fa-chevron-right tile__chevron"></i>
+        </div>
+        <span class="tile__value">{{total_policy_holder}}</span>
+      </a>
+
+      <a class="tile tile--stat tile--approved" href="admin-view-approved-policy-holder">
+        <div class="tile__top">
+          <span class="tile__icon"><i class="fas fa-user-check"></i></span>
+          <span class="tile__label">Approved Policy Holder</span>
+          <i class="fas fa-chevron-right tile__chevron"></i>
+        </div>
+        <span class="tile__value">{{approved_policy_holder}}</span>
+      </a>
+
+      <a class="tile tile--stat tile--disapproved" href="admin-view-disapproved-policy-holder">
+        <div class="tile__top">
+          <span class="tile__icon"><i class="fas fa-user-times"></i></span>
+          <span class="tile__label">Disapproved Policy Holder</span>
+          <i class="fas fa-chevron-right tile__chevron"></i>
+        </div>
+        <span class="tile__value">{{disapproved_policy_holder}}</span>
+      </a>
+
+      <a class="tile tile--stat tile--waiting" href="admin-view-waiting-policy-holder">
+        <div class="tile__top">
+          <span class="tile__icon"><i class="fas fa-user-clock"></i></span>
+          <span class="tile__label">Policy Holder Waiting For Approval</span>
+          <i class="fas fa-chevron-right tile__chevron"></i>
+        </div>
+        <span class="tile__value">{{waiting_policy_holder}}</span>
+      </a>
+
+    </div>
+  </section>
+
+</div>
+
+<script src="https://netdna.bootstrapcdn.com/bootstrap/4.0.0-beta/js/bootstrap.min.js"></script>
+
+{% endblock content %}

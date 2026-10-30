@@ -1,0 +1,460 @@
+
+{% extends 'customer/customerbase.html' %}
+{% load widget_tweaks %}
+
+{% block content %}
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            background: #f4f7fb;
+            font-family: 'Segoe UI', Tahoma, sans-serif;
+            color: #172b4d;
+        }
+
+        .dashboard {
+            max-width: 1250px;
+            margin: 0 auto;
+            padding: 40px 25px 70px;
+        }
+
+        /* Welcome section */
+        .welcome-section {
+            background: linear-gradient(115deg, #102a43, #174c78);
+            border-radius: 18px;
+            padding: 40px;
+            color: white;
+            position: relative;
+            overflow: hidden;
+            margin-bottom: 35px;
+        }
+
+        .welcome-section::after {
+            content: '\f0e9';
+            font-family: 'Font Awesome 6 Free';
+            font-weight: 900;
+            position: absolute;
+            right: 55px;
+            top: 20px;
+            font-size: 150px;
+            opacity: 0.07;
+        }
+
+        .welcome-section .eyebrow {
+            color: #93c5fd;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            font-size: 12px;
+            font-weight: 700;
+            margin-bottom: 12px;
+        }
+
+        .welcome-section h1 {
+            font-size: 32px;
+            font-weight: 750;
+            margin-bottom: 12px;
+        }
+
+        .welcome-section p {
+            color: #d6e5f3;
+            font-size: 15px;
+            max-width: 570px;
+            line-height: 1.7;
+            margin-bottom: 22px;
+        }
+
+        .welcome-btn {
+            display: inline-block;
+            background: #ffffff;
+            color: #123b5d;
+            padding: 12px 22px;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 700;
+            transition: 0.3s;
+        }
+
+        .welcome-btn:hover {
+            background: #dbeafe;
+            color: #123b5d;
+            text-decoration: none;
+            transform: translateY(-2px);
+        }
+
+        /* Section heading */
+        .section-heading {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 22px;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .section-heading h2 {
+            font-size: 21px;
+            font-weight: 700;
+            color: #102a43;
+            margin: 0;
+        }
+
+        .section-heading span {
+            font-size: 13px;
+            color: #8292a8;
+        }
+
+        /* Dashboard cards */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            gap: 20px;
+        }
+
+        .stat-card {
+            display: block;
+            position: relative;
+            padding: 25px;
+            min-height: 180px;
+            border-radius: 14px;
+            background: white;
+            border: 1px solid #e8edf4;
+            box-shadow: 0 4px 18px rgba(24, 48, 80, 0.04);
+            transition: all 0.3s ease;
+            text-decoration: none !important;
+            color: #172b4d !important;
+            overflow: hidden;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-7px);
+            box-shadow: 0 12px 28px rgba(24, 48, 80, 0.12);
+            border-color: #bfdbfe;
+        }
+
+        .stat-top {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 22px;
+        }
+
+        .stat-icon {
+            width: 48px;
+            height: 48px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            border-radius: 12px;
+            font-size: 19px;
+        }
+
+        .icon-blue {
+            background: #eaf2ff;
+            color: #2563eb;
+        }
+
+        .icon-green {
+            background: #e5f8ef;
+            color: #15965b;
+        }
+
+        .icon-purple {
+            background: #f1eaff;
+            color: #8052c7;
+        }
+
+        .icon-orange {
+            background: #fff2e4;
+            color: #e58a28;
+        }
+
+        .stat-arrow {
+            color: #a5b1c2;
+            font-size: 14px;
+            transition: 0.3s;
+        }
+
+        .stat-card:hover .stat-arrow {
+            color: #2563eb;
+            transform: translateX(4px);
+        }
+
+        .stat-number {
+            font-size: 32px;
+            font-weight: 750;
+            color: #102a43;
+            margin-bottom: 5px;
+        }
+
+        .stat-label {
+            font-size: 14px;
+            color: #718096;
+            font-weight: 500;
+        }
+
+        /* Quick actions */
+        .quick-section {
+            margin-top: 40px;
+        }
+
+        .quick-grid {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 18px;
+        }
+
+        .quick-card {
+            background: white;
+            border: 1px solid #e8edf4;
+            border-radius: 13px;
+            padding: 22px;
+            display: flex;
+            align-items: center;
+            gap: 17px;
+            text-decoration: none !important;
+            color: #172b4d !important;
+            transition: 0.3s ease;
+        }
+
+        .quick-card:hover {
+            border-color: #93c5fd;
+            background: #fafdff;
+            transform: translateX(5px);
+        }
+
+        .quick-icon {
+            width: 45px;
+            height: 45px;
+            flex-shrink: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 11px;
+            background: #edf4ff;
+            color: #2563eb;
+            font-size: 18px;
+        }
+
+        .quick-card h4 {
+            font-size: 15px;
+            font-weight: 700;
+            margin: 0 0 5px;
+        }
+
+        .quick-card p {
+            color: #8795a8;
+            font-size: 12px;
+            margin: 0;
+        }
+
+        /* Responsive */
+        @media (max-width: 1000px) {
+            .stats-grid {
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+            }
+        }
+
+        @media (max-width: 600px) {
+            .dashboard {
+                padding: 25px 15px 45px;
+            }
+
+            .welcome-section {
+                padding: 28px 22px;
+            }
+
+            .welcome-section h1 {
+                font-size: 25px;
+            }
+
+            .welcome-section::after {
+                font-size: 90px;
+                right: 15px;
+            }
+
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .quick-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .stat-card {
+                min-height: 155px;
+            }
+        }
+    </style>
+</head>
+
+<div class="dashboard">
+
+    <!-- Welcome section -->
+    <section class="welcome-section">
+
+        <div class="eyebrow">Customer Dashboard</div>
+
+        <h1>Welcome Back!</h1>
+
+        <p>
+            Your financial security matters. Manage your insurance
+            policies, explore available coverage, and stay updated
+            on your insurance journey, all in one place.
+        </p>
+
+        <a href="apply-policy" class="welcome-btn">
+            Explore Policies &nbsp; <i class="fas fa-arrow-right"></i>
+        </a>
+
+    </section>
+
+
+    <!-- Statistics -->
+    <div class="section-heading">
+
+        <h2>Overview</h2>
+
+        <span>Your insurance activity at a glance</span>
+
+    </div>
+
+
+    <div class="stats-grid">
+
+        <!-- Available Policies -->
+        <a href="apply-policy" class="stat-card">
+
+            <div class="stat-top">
+
+                <div class="stat-icon icon-blue">
+                    <i class="fas fa-shield-halved"></i>
+                </div>
+
+                <i class="fas fa-arrow-up-right-from-square stat-arrow"></i>
+
+            </div>
+
+            <div class="stat-number">{{available_policy}}</div>
+
+            <div class="stat-label">Available Policies</div>
+
+        </a>
+
+
+        <!-- Applied Policies -->
+        <a href="history" class="stat-card">
+
+            <div class="stat-top">
+
+                <div class="stat-icon icon-green">
+                    <i class="fas fa-file-circle-check"></i>
+                </div>
+
+                <i class="fas fa-arrow-up-right-from-square stat-arrow"></i>
+
+            </div>
+
+            <div class="stat-number">{{applied_policy}}</div>
+
+            <div class="stat-label">Applied Policies</div>
+
+        </a>
+
+
+
+
+        <!-- Questions -->
+        <a href="question-history" class="stat-card">
+
+            <div class="stat-top">
+
+                <div class="stat-icon icon-orange">
+                    <i class="fas fa-comments"></i>
+                </div>
+
+                <i class="fas fa-arrow-up-right-from-square stat-arrow"></i>
+
+            </div>
+
+            <div class="stat-number">{{total_question}}</div>
+
+            <div class="stat-label">Total Questions Asked</div>
+
+        </a>
+
+    </div>
+
+
+    <!-- Quick actions -->
+    <section class="quick-section">
+
+        <div class="section-heading">
+
+            <h2>Quick Actions</h2>
+
+            <span>What would you like to do today?</span>
+
+        </div>
+
+
+        <div class="quick-grid">
+
+            <a href="apply-policy" class="quick-card">
+
+                <div class="quick-icon">
+                    <i class="fas fa-plus"></i>
+                </div>
+
+                <div>
+                    <h4>Explore Insurance Policies</h4>
+                    <p>Discover coverage options available to you.</p>
+                </div>
+
+            </a>
+
+
+            <a href="history" class="quick-card">
+
+                <div class="quick-icon">
+                    <i class="fas fa-folder-open"></i>
+                </div>
+
+                <div>
+                    <h4>My Policy Applications</h4>
+                    <p>View your previously submitted applications.</p>
+                </div>
+
+            </a>
+
+
+            <a href="question-history" class="quick-card">
+
+                <div class="quick-icon">
+                    <i class="fas fa-headset"></i>
+                </div>
+
+                <div>
+                    <h4>My Questions</h4>
+                    <p>Review your insurance-related questions.</p>
+                </div>
+
+            </a>
+
+
+
+        </div>
+
+    </section>
+
+</div>
+
+{% endblock content %}

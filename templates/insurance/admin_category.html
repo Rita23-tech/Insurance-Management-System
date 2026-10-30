@@ -1,0 +1,367 @@
+{% extends 'insurance/adminbase.html' %}
+{% load widget_tweaks %}
+{% block content %}
+
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+<style>
+  /* ---------- Design tokens ---------- */
+  .category-dashboard {
+    --navy-950: #060b1f;
+    --navy-900: #0a1230;
+    --navy-800: #101a42;
+    --navy-700: #17245a;
+    --blue-500: #2f6bff;
+    --blue-300: #8fb3ff;
+    --ink: #ffffff;
+    --muted: #9aa7c7;
+    --line: rgba(255, 255, 255, 0.08);
+
+    box-sizing: border-box;
+    font-family: "Manrope", "Segoe UI", system-ui, -apple-system, sans-serif;
+    color: var(--ink);
+    background: var(--navy-900);
+    background-image: radial-gradient(1200px 400px at 100% -10%, rgba(47, 107, 255, 0.18), transparent 60%);
+    border-radius: 20px;
+    padding: 36px;
+    margin: 24px auto 48px;
+    max-width: 1200px;
+    min-height: 60vh;
+  }
+
+  .category-dashboard *,
+  .category-dashboard *::before,
+  .category-dashboard *::after {
+    box-sizing: border-box;
+  }
+
+  .category-dashboard a,
+  .category-dashboard a:link,
+  .category-dashboard a:visited,
+  .category-dashboard a:hover {
+    text-decoration: none;
+    color: inherit;
+  }
+
+  /* ---------- Header ---------- */
+  .category-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 16px;
+    margin-bottom: 36px;
+  }
+
+  .category-header h2 {
+    color: var(--ink);
+    font-size: 1.75rem;
+    font-weight: 800;
+    letter-spacing: -0.01em;
+    margin: 0 0 4px;
+  }
+
+  .category-header p {
+    color: var(--muted);
+    font-size: 0.95rem;
+    margin: 0;
+  }
+
+  .header-tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: rgba(47, 107, 255, 0.14);
+    border: 1px solid rgba(47, 107, 255, 0.35);
+    color: var(--blue-300);
+    border-radius: 999px;
+    padding: 8px 16px;
+    font-size: 0.85rem;
+    font-weight: 600;
+  }
+
+  .category-section-title {
+    color: var(--ink);
+    font-size: 1rem;
+    font-weight: 700;
+    margin: 0 0 16px;
+  }
+
+  /* ---------- Card grid ---------- */
+  .action-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 16px;
+  }
+
+  /* ---------- Action card ---------- */
+  .category-action {
+    --accent: var(--blue-500);
+    --accent-soft: rgba(47, 107, 255, 0.16);
+    --mx: 50%;
+    --my: 0%;
+
+    position: relative;
+    display: block;
+    min-height: 190px;
+    padding: 24px;
+    background: var(--navy-800);
+    border: 1px solid var(--line);
+    border-radius: 16px;
+    overflow: hidden;
+    cursor: pointer;
+    transition: border-color 0.2s ease, transform 0.2s ease, background-color 0.2s ease;
+  }
+
+  /* Soft light that follows the cursor (position set by the script below) */
+  .category-action::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(260px circle at var(--mx) var(--my), var(--accent-soft), transparent 70%);
+    opacity: 0;
+    transition: opacity 0.25s ease;
+    pointer-events: none;
+  }
+
+  .category-action:hover,
+  .category-action:focus-visible {
+    border-color: var(--accent);
+    transform: translateY(-4px);
+  }
+
+  .category-action:hover::before,
+  .category-action:focus-visible::before {
+    opacity: 1;
+  }
+
+  .category-action:focus-visible {
+    outline: 2px solid var(--blue-300);
+    outline-offset: 3px;
+  }
+
+  .category-action:active {
+    transform: translateY(-1px) scale(0.985);
+  }
+
+  .action-icon {
+    position: relative;
+    width: 48px;
+    height: 48px;
+    display: grid;
+    place-items: center;
+    border-radius: 12px;
+    font-size: 1.1rem;
+    margin-bottom: 22px;
+    color: var(--accent);
+    background: var(--accent-soft);
+    transition: background-color 0.2s ease, color 0.2s ease, transform 0.2s ease;
+  }
+
+  .category-action:hover .action-icon,
+  .category-action:focus-visible .action-icon {
+    background: var(--accent);
+    color: #fff;
+    transform: scale(1.06);
+  }
+
+  .action-title {
+    position: relative;
+    color: var(--ink);
+    font-size: 1.05rem;
+    font-weight: 700;
+    margin: 0 0 6px;
+  }
+
+  .action-description {
+    position: relative;
+    color: var(--muted);
+    font-size: 0.85rem;
+    line-height: 1.5;
+    margin: 0;
+    padding-right: 28px;
+  }
+
+  .action-arrow {
+    position: absolute;
+    right: 22px;
+    bottom: 24px;
+    color: var(--muted);
+    font-size: 0.9rem;
+    transition: color 0.2s ease, transform 0.2s ease;
+  }
+
+  .category-action:hover .action-arrow,
+  .category-action:focus-visible .action-arrow {
+    color: #fff;
+    transform: translateX(5px);
+  }
+
+  /* ---------- Per-action accents ---------- */
+  .view-card {
+    --accent: #2f6bff;
+    --accent-soft: rgba(47, 107, 255, 0.18);
+  }
+
+  .add-card {
+    --accent: #34d399;
+    --accent-soft: rgba(52, 211, 153, 0.16);
+  }
+
+  .update-card {
+    --accent: #a78bfa;
+    --accent-soft: rgba(167, 139, 250, 0.16);
+  }
+
+  .delete-card {
+    --accent: #f87171;
+    --accent-soft: rgba(248, 113, 113, 0.16);
+  }
+
+  /* ---------- Page-load: cards rise in one after another ---------- */
+  .action-grid .category-action {
+    animation: card-in 0.5s cubic-bezier(0.2, 0.7, 0.2, 1) both;
+  }
+
+  .action-grid .category-action:nth-child(2) { animation-delay: 0.07s; }
+  .action-grid .category-action:nth-child(3) { animation-delay: 0.14s; }
+  .action-grid .category-action:nth-child(4) { animation-delay: 0.21s; }
+
+  @keyframes card-in {
+    from {
+      opacity: 0;
+      transform: translateY(14px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  /* ---------- Small screens ---------- */
+  @media (max-width: 576px) {
+    .category-dashboard {
+      padding: 22px 18px;
+      border-radius: 14px;
+      margin: 12px 8px 32px;
+    }
+
+    .category-header h2 {
+      font-size: 1.5rem;
+    }
+
+    .category-action {
+      min-height: 170px;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .action-grid .category-action {
+      animation: none;
+    }
+
+    .category-action,
+    .category-action::before,
+    .action-icon,
+    .action-arrow {
+      transition: none;
+    }
+
+    .category-action:hover,
+    .category-action:focus-visible,
+    .category-action:active {
+      transform: none;
+    }
+  }
+</style>
+
+<div class="category-dashboard">
+
+  <!-- Page Header -->
+  <div class="category-header">
+    <div>
+      <h2>Category Management</h2>
+      <p>Manage and organise your insurance policy categories.</p>
+    </div>
+
+    <div class="header-tag">
+      <i class="fas fa-folder-open"></i>
+      <span>Admin panel</span>
+    </div>
+  </div>
+
+  <h6 class="category-section-title">Category actions</h6>
+
+  <div class="action-grid">
+
+    <!-- View Category -->
+    <a href="admin-view-category" class="category-action view-card">
+      <div class="action-icon">
+        <i class="fas fa-eye"></i>
+      </div>
+
+      <h5 class="action-title">View Categories</h5>
+      <p class="action-description">Browse and review existing categories.</p>
+
+      <i class="fas fa-arrow-right action-arrow"></i>
+    </a>
+
+    <!-- Add Category -->
+    <a href="admin-add-category" class="category-action add-card">
+      <div class="action-icon">
+        <i class="fas fa-plus"></i>
+      </div>
+
+      <h5 class="action-title">Add Category</h5>
+      <p class="action-description">Create a new insurance category.</p>
+
+      <i class="fas fa-arrow-right action-arrow"></i>
+    </a>
+
+    <!-- Update Category -->
+    <a href="admin-update-category" class="category-action update-card">
+      <div class="action-icon">
+        <i class="fas fa-edit"></i>
+      </div>
+
+      <h5 class="action-title">Update Category</h5>
+      <p class="action-description">Edit and maintain category details.</p>
+
+      <i class="fas fa-arrow-right action-arrow"></i>
+    </a>
+
+    <!-- Delete Category -->
+    <a href="admin-delete-category" class="category-action delete-card">
+      <div class="action-icon">
+        <i class="fas fa-trash"></i>
+      </div>
+
+      <h5 class="action-title">Delete Category</h5>
+      <p class="action-description">Remove categories that are no longer needed.</p>
+
+      <i class="fas fa-arrow-right action-arrow"></i>
+    </a>
+
+  </div>
+
+</div>
+
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"></script>
+
+<script>
+  // Cursor glow: tell each card where the pointer is so the CSS can
+  // paint a soft light under it. Purely visual, links still work as normal.
+  document.querySelectorAll('.category-action').forEach(function (card) {
+    card.addEventListener('pointermove', function (e) {
+      var rect = card.getBoundingClientRect();
+      card.style.setProperty('--mx', (e.clientX - rect.left) + 'px');
+      card.style.setProperty('--my', (e.clientY - rect.top) + 'px');
+    });
+  });
+</script>
+
+{% endblock content %}

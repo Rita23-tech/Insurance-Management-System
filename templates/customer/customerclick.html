@@ -1,0 +1,248 @@
+
+<!DOCTYPE html>
+{% load static %}
+<html lang="en" dir="ltr">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+  <title>Welcome | Insurance Management System</title>
+
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: #EAF0F8;
+      color: #173B63;
+    }
+
+    .hero-section {
+      min-height: 75vh;
+      margin: 25px 5%;
+      padding: 75px 25px;
+      border-radius: 22px;
+      background:
+        linear-gradient(120deg, rgba(12, 35, 64, 0.96), rgba(30, 72, 116, 0.88)),
+        url("{% static 'image/homepage.jpg' %}") center/cover no-repeat;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+      box-shadow: 0 15px 40px rgba(16, 45, 80, 0.18);
+    }
+
+    .hero-section::before,
+    .hero-section::after {
+      content: "";
+      position: absolute;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.05);
+      pointer-events: none;
+    }
+
+    .hero-section::before {
+      width: 300px;
+      height: 300px;
+      top: -120px;
+      right: -70px;
+    }
+
+    .hero-section::after {
+      width: 220px;
+      height: 220px;
+      bottom: -100px;
+      left: -50px;
+    }
+
+    .hero-content {
+      max-width: 750px;
+      position: relative;
+      z-index: 1;
+      animation: fadeIn 1s ease;
+    }
+
+    .welcome-label {
+      display: inline-block;
+      padding: 9px 18px;
+      margin-bottom: 20px;
+      border: 1px solid rgba(255, 255, 255, 0.3);
+      border-radius: 30px;
+      color: #D8E8FA;
+      background: rgba(255, 255, 255, 0.1);
+      font-size: 13px;
+      font-weight: 600;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+    }
+
+    .hero-content h1 {
+      color: #FFFFFF;
+      font-size: clamp(36px, 5vw, 58px);
+      font-weight: 750;
+      line-height: 1.2;
+      margin-bottom: 18px;
+    }
+
+    .hero-content h1 span {
+      color: #8DB9E8;
+    }
+
+    .hero-content .lead {
+      color: #DCE8F5;
+      font-size: 19px;
+      line-height: 1.7;
+      margin-bottom: 28px;
+    }
+
+    .hero-divider {
+      width: 65px;
+      height: 4px;
+      background: #8DB9E8;
+      border: none;
+      border-radius: 10px;
+      margin: 25px auto;
+    }
+
+    .hero-description {
+      color: #C6D7E9;
+      font-size: 15px;
+      margin-bottom: 30px;
+    }
+
+    .hero-buttons {
+      display: flex;
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: 15px;
+    }
+
+    .hero-buttons .btn {
+      min-width: 165px;
+      padding: 13px 25px;
+      border-radius: 9px;
+      font-size: 15px;
+      font-weight: 600;
+      text-decoration: none;
+      transition: all 0.3s ease;
+    }
+
+    .btn-signup {
+      background: #FFFFFF;
+      color: #173B63;
+      border: 2px solid #FFFFFF;
+    }
+
+    .btn-signup:hover {
+      background: #DCE9F7;
+      color: #102D50;
+      transform: translateY(-4px);
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+    }
+
+    .btn-login {
+      background: #315F91;
+      color: #FFFFFF;
+      border: 2px solid #6F9AC8;
+    }
+
+    .btn-login:hover {
+      background: #4778AD;
+      color: #FFFFFF;
+      transform: translateY(-4px);
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+    }
+
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    @media (max-width: 600px) {
+      .hero-section {
+        min-height: 65vh;
+        margin: 15px 12px;
+        padding: 55px 20px;
+        border-radius: 15px;
+      }
+
+      .hero-content .lead {
+        font-size: 16px;
+      }
+
+      .hero-buttons {
+        flex-direction: column;
+        align-items: center;
+      }
+
+      .hero-buttons .btn {
+        width: 100%;
+        max-width: 260px;
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .hero-content {
+        animation: none;
+      }
+
+      .hero-buttons .btn {
+        transition: none;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  {% include "insurance/navbar.html" %}
+
+  <main>
+    <section class="hero-section">
+      <div class="hero-content">
+
+        <span class="welcome-label">Insurance Management System</span>
+
+        <h1>Hello, <span>Customer!</span></h1>
+
+        <p class="lead">
+          Welcome to a smarter and simpler way to manage your insurance.
+        </p>
+
+        <hr class="hero-divider">
+
+        <p class="hero-description">
+          Access your account to explore our services and enjoy a seamless insurance management experience.
+        </p>
+
+        <div class="hero-buttons">
+          <a class="btn btn-signup" href="customersignup" role="button">
+            Create Your Account
+          </a>
+
+          <a class="btn btn-login" href="customerlogin" role="button">
+            Login to Your Account
+          </a>
+        </div>
+
+      </div>
+    </section>
+  </main>
+
+  {% include "insurance/footer.html" %}
+
+</body>
+</html>
